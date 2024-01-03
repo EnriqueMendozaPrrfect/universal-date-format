@@ -1,14 +1,20 @@
 import getDateFormatString from './formatDateToString'
 import UniversalDateFormatInitialValues from './initialValues'
-import { type daysType, type monthsType, typeOfDate } from './types'
+import { type DaysType, type MonthsType, typeOfDate } from './types'
+import {
+  DateValueNotIsDate,
+  InvalidDefaultFormat,
+  InvalidStringFormat,
+  UniversalDateFormatStandardError
+} from './Errors'
 
 class UniversalDateFormat {
   readonly date: Date
 
-  private div: string | [string, string] = '/'
-  private defaultFormat: typeOfDate = typeOfDate.YYYYMMDD
-  private months: monthsType = UniversalDateFormatInitialValues.months
-  private days: daysType = UniversalDateFormatInitialValues.days
+  private div: string | [string, string] = UniversalDateFormatInitialValues.div
+  private defaultFormat: typeOfDate = UniversalDateFormatInitialValues.defaultFormat
+  private months: MonthsType = UniversalDateFormatInitialValues.months
+  private days: DaysType = UniversalDateFormatInitialValues.days
 
   constructor (date: Date)
   constructor (date: string)
@@ -16,11 +22,13 @@ class UniversalDateFormat {
     if (typeof arg[0] === 'string') {
       this.date = new Date(arg[0])
 
-      if (this.date.toString() === 'Invalid Date') throw new Error()
+      if (this.date.toString() === 'Invalid Date') throw new InvalidStringFormat(arg[0])
     } else if (arg[0] instanceof Date) {
       this.date = arg[0]
     } else {
-      throw new Error()
+      throw new UniversalDateFormatStandardError(
+        'value given to create an instance of UniversalDateFormat is not valid'
+      )
     }
   }
 
@@ -44,7 +52,7 @@ class UniversalDateFormat {
       case typeOfDate.DDMMYYYY:
         return this.getDateAsDDMMYYYY(useMonthName, useYearWithTwoDigits)
       default:
-        throw new Error('type of format is not assigned')
+        throw new InvalidDefaultFormat()
     }
   }
 
@@ -94,7 +102,7 @@ class UniversalDateFormat {
   }
 
   getDayName (): string {
-    return this.days[this.date.getDay() as keyof daysType]
+    return this.days[this.date.getDay() as keyof DaysType]
   }
 
   getHour (useTwelveHourFormat: boolean = false, useSeconds: boolean = false): string {
@@ -124,31 +132,39 @@ class UniversalDateFormat {
     }
   }
 
-  setMonths (months: monthsType): void {
+  setMonths (months: MonthsType): void {
     this.months = months
   }
 
-  setDays (days: daysType): void {
+  setDays (days: DaysType): void {
     this.days = days
   }
 
-  private getYear (useTwoDigitsInYear: boolean): string {
+  private getYear (useYearWithTwoDigits: boolean): string {
     try {
-      return useTwoDigitsInYear
+      return useYearWithTwoDigits
         ? this.date.getFullYear().toString().substring(2, 4)
         : this.date.getFullYear().toString()
     } catch (error) {
-      throw new Error('date probably does not have a value assigned')
+      if (error instanceof Error) {
+        throw new DateValueNotIsDate({ cause: error })
+      } else {
+        throw new UniversalDateFormatStandardError('An unexpected error ocurred')
+      }
     }
   }
 
   private getMonth (useMonthName: boolean): string {
     try {
       return useMonthName
-        ? this.months[this.date.getMonth() as keyof monthsType]
+        ? this.months[this.date.getMonth() as keyof MonthsType]
         : (this.date.getMonth() + 1).toString()
     } catch (error) {
-      throw new Error('date probably does not have a value assigned')
+      if (error instanceof Error) {
+        throw new DateValueNotIsDate({ cause: error })
+      } else {
+        throw new UniversalDateFormatStandardError('An unexpected error ocurred')
+      }
     }
   }
 
@@ -156,7 +172,11 @@ class UniversalDateFormat {
     try {
       return this.date.getHours() >= 12 ? 'PM' : 'AM'
     } catch (error) {
-      throw new Error('date probably does not have a value assigned')
+      if (error instanceof Error) {
+        throw new DateValueNotIsDate({ cause: error })
+      } else {
+        throw new UniversalDateFormatStandardError('An unexpected error ocurred')
+      }
     }
   }
 
@@ -164,14 +184,25 @@ class UniversalDateFormat {
     try {
       return this.date.getHours() >= 12 ? this.date.getHours() - 12 : this.date.getHours()
     } catch (error) {
-      throw new Error('date probably does not have a value assigned')
+      if (error instanceof Error) {
+        throw new DateValueNotIsDate({ cause: error })
+      } else {
+        throw new UniversalDateFormatStandardError('An unexpected error ocurred')
+      }
     }
   }
 }
 
 export default UniversalDateFormat
 
+export {
+  DateValueNotIsDate,
+  InvalidDefaultFormat,
+  InvalidStringFormat,
+  UniversalDateFormatStandardError
+}
+
 export type {
-  daysType,
-  monthsType
+  DaysType,
+  MonthsType
 }
