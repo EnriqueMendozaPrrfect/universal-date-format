@@ -1,3 +1,5 @@
+import { typeOfDate } from './types'
+
 const UniversalDateFormatInitialValues = {
   months: {
     0: 'January',
@@ -21,7 +23,9 @@ const UniversalDateFormatInitialValues = {
     4: 'Thursday',
     5: 'Friday',
     6: 'Saturday'
-  }
+  },
+  defaultFormat: typeOfDate.YYYYMMDD,
+  div: '/'
 }
 
 export default UniversalDateFormatInitialValues

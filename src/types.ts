@@ -1,4 +1,4 @@
-interface monthsType {
+interface MonthsType {
   0: string
   1: string
   2: string
@@ -13,7 +13,7 @@ interface monthsType {
   11: string
 }
 
-interface daysType {
+interface DaysType {
   0: string
   1: string
   2: string
@@ -21,6 +21,10 @@ interface daysType {
   4: string
   5: string
   6: string
+}
+
+interface ErrorOptions {
+  cause?: Error
 }
 
 enum typeOfDate {
@@ -34,6 +38,7 @@ export {
 }
 
 export type {
-  daysType,
-  monthsType
+  DaysType,
+  ErrorOptions,
+  MonthsType
 }
