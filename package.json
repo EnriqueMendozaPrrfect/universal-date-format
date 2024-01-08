@@ -1,6 +1,6 @@
 {
   "name": "universal-date-format",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Easy way to display dates using a common human languaje",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
