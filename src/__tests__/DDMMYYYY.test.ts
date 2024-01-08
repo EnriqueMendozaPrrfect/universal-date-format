@@ -9,55 +9,43 @@ describe('Universal Date Format', () => {
     })
 
     it('should get date with DDMMYYYY format', () => {
-      expect(universalDateFormat.getDateAsDDMMYYYY()).toBe('1/1/2020')
+      universalDateFormat.setDDMMYYYYAsDefault()
+
+      expect(universalDateFormat.getDateFormat()).toBe('1/1/2020')
     })
 
     it('should get date with DDMMYYYY format using hyphen', () => {
-      universalDateFormat.setDiv('-')
+      universalDateFormat.setDDMMYYYYAsDefault()
+      universalDateFormat.modifyDiv('-')
 
-      expect(universalDateFormat.getDateAsDDMMYYYY()).toBe('1-1-2020')
+      expect(universalDateFormat.getDateFormat()).toBe('1-1-2020')
     })
 
     it('should get date with DDMMYYYY format using hyphen with spacing', () => {
-      universalDateFormat.setDiv('-', true)
+      universalDateFormat.setDDMMYYYYAsDefault()
+      universalDateFormat.modifyDiv('-', true)
 
-      expect(universalDateFormat.getDateAsDDMMYYYY()).toBe('1 - 1 - 2020')
+      expect(universalDateFormat.getDateFormat()).toBe('1 - 1 - 2020')
     })
 
     it('should get date with DDMMYYYY format using month with name', () => {
-      expect(universalDateFormat.getDateAsDDMMYYYY(true)).toBe('1/January/2020')
+      universalDateFormat.setDDMMYYYYAsDefault()
+      universalDateFormat.useMonthName()
+
+      expect(universalDateFormat.getDateFormat()).toBe('1/January/2020')
     })
 
     it('should get date with DDMMYYYY format using two digits in the year', () => {
-      expect(universalDateFormat.getDateAsDDMMYYYY(false, true)).toBe('1/1/20')
+      universalDateFormat.setDDMMYYYYAsDefault()
+
+      expect(universalDateFormat.getDateFormat(true)).toBe('1/1/20')
     })
 
     it('should get date with DDMMYYYY format using month name and two digits in the year', () => {
-      expect(universalDateFormat.getDateAsDDMMYYYY(true, true)).toBe('1/January/20')
-    })
-
-    it('should convert DDMMYYYY to default', () => {
       universalDateFormat.setDDMMYYYYAsDefault()
+      universalDateFormat.useMonthName()
 
-      expect(universalDateFormat.getDate()).toBe('1/1/2020')
-    })
-
-    it('should get default date format using month with name', () => {
-      universalDateFormat.setDDMMYYYYAsDefault()
-
-      expect(universalDateFormat.getDate(true)).toBe('1/January/2020')
-    })
-
-    it('should get default date format using two digits in the year', () => {
-      universalDateFormat.setDDMMYYYYAsDefault()
-
-      expect(universalDateFormat.getDate(false, true)).toBe('1/1/20')
-    })
-
-    it('should get default date format using month name and two digits in the year', () => {
-      universalDateFormat.setDDMMYYYYAsDefault()
-
-      expect(universalDateFormat.getDate(true, true)).toBe('1/January/20')
+      expect(universalDateFormat.getDateFormat(true)).toBe('1/January/20')
     })
   })
 })
