@@ -1,6 +1,6 @@
 import getDateFormatString from './formatDateToString'
 import UniversalDateFormatInitialValues from './initialValues'
-import { type DaysType, type MonthsType, typeOfDate } from './types'
+import { type DaysType, type MonthsType, type TypeOfDate } from './types'
 import {
   DateValueNotIsDate,
   InvalidDefaultFormat,
@@ -12,9 +12,11 @@ class UniversalDateFormat {
   readonly date: Date
 
   private div: string | [string, string] = UniversalDateFormatInitialValues.div
-  private defaultFormat: typeOfDate = UniversalDateFormatInitialValues.defaultFormat
+  private defaultFormat: TypeOfDate = UniversalDateFormatInitialValues.defaultFormat
   private months: MonthsType = UniversalDateFormatInitialValues.months
   private days: DaysType = UniversalDateFormatInitialValues.days
+  private isMeridianFormat = false
+  private isMonthName = false
 
   constructor (date: Date)
   constructor (date: string)
@@ -40,78 +42,46 @@ class UniversalDateFormat {
     }
   }
 
-  getDate (
-    useMonthName: boolean = false,
-    useYearWithTwoDigits: boolean = false
+  getDateFormat (
+    isYearAsTwoDigits: boolean = false
   ): string {
     switch (this.defaultFormat) {
-      case typeOfDate.YYYYMMDD:
-        return this.getDateAsYYYYMMDD(useMonthName, useYearWithTwoDigits)
-      case typeOfDate.MMDDYYYY:
-        return this.getDateAsMMDDYYYY(useMonthName, useYearWithTwoDigits)
-      case typeOfDate.DDMMYYYY:
-        return this.getDateAsDDMMYYYY(useMonthName, useYearWithTwoDigits)
+      case 'YYYYMMDD':
+        return this.getDateAsYYYYMMDD(isYearAsTwoDigits)
+      case 'MMDDYYYY':
+        return this.getDateAsMMDDYYYY(isYearAsTwoDigits)
+      case 'DDMMYYYY':
+        return this.getDateAsDDMMYYYY(isYearAsTwoDigits)
       default:
         throw new InvalidDefaultFormat()
     }
   }
 
-  getDateAsYYYYMMDD (
-    useMonthName: boolean = false,
-    useYearWithTwoDigits: boolean = false
-  ): string {
-    const year = this.getYear(useYearWithTwoDigits)
-    const mounth = this.getMonth(useMonthName)
-    const day = this.date.getDate().toString()
-
-    return getDateFormatString(year, mounth, day, this.div)
-  }
-
   setYYYYMMDDAsDefault (): void {
-    this.defaultFormat = typeOfDate.YYYYMMDD
-  }
-
-  getDateAsMMDDYYYY (
-    useMonthName: boolean = false,
-    useYearWithTwoDigits: boolean = false
-  ): string {
-    const year = this.getYear(useYearWithTwoDigits)
-    const mounth = this.getMonth(useMonthName)
-    const day = this.date.getDate().toString()
-
-    return getDateFormatString(mounth, day, year, this.div)
+    this.defaultFormat = 'YYYYMMDD'
   }
 
   setMMDDYYYYAsDefault (): void {
-    this.defaultFormat = typeOfDate.MMDDYYYY
-  }
-
-  getDateAsDDMMYYYY (
-    useMonthName: boolean = false,
-    useYearWithTwoDigits: boolean = false
-  ): string {
-    const year = this.getYear(useYearWithTwoDigits)
-    const mounth = this.getMonth(useMonthName)
-    const day = this.date.getDate().toString()
-
-    return getDateFormatString(day, mounth, year, this.div)
+    this.defaultFormat = 'MMDDYYYY'
   }
 
   setDDMMYYYYAsDefault (): void {
-    this.defaultFormat = typeOfDate.DDMMYYYY
+    this.defaultFormat = 'DDMMYYYY'
   }
 
   getDayName (): string {
-    return this.days[this.date.getDay() as keyof DaysType]
+    return this.days[this.date.getDay()]
   }
 
-  getHour (useTwelveHourFormat: boolean = false, useSeconds: boolean = false): string {
-    const hour = useTwelveHourFormat ? this.convertHourToMeridianFormat() : this.date.getHours()
-    const minutes = useSeconds
-      ? `${this.date.getMinutes()}:${this.date.getSeconds()}`
-      : `${this.date.getMinutes()}`
+  getHourFormat (isSecondsEnabled: boolean = false): string {
+    const hour = this.isMeridianFormat
+      ? this.convertHourToMeridianFormat()
+      : ('0' + this.date.getHours()).slice(-2)
+    const minutes = isSecondsEnabled
+      ? `${('0' + this.date.getMinutes()).slice(-2)}:${('0' + this.date.getSeconds()).slice(-2)}`
+      : `${('0' + this.date.getMinutes()).slice(-2)}`
 
-    if (useTwelveHourFormat) {
+    if (this.isMeridianFormat) {
       const meridian = this.getMeridian()
 
       return `${hour}:${minutes} ${meridian}`
@@ -120,7 +90,7 @@ class UniversalDateFormat {
     }
   }
 
-  setDiv (div: string | [string, string], hasSpacing = false): void {
+  modifyDiv (div: string | [string, string], hasSpacing = false): void {
     if (hasSpacing) {
       if (typeof div === 'string') {
         this.div = ` ${div} `
@@ -132,17 +102,63 @@ class UniversalDateFormat {
     }
   }
 
-  setMonths (months: MonthsType): void {
+  modifyMonthsName (months: MonthsType): void {
     this.months = months
   }
 
-  setDays (days: DaysType): void {
+  modifyDaysName (days: DaysType): void {
     this.days = days
   }
 
-  private getYear (useYearWithTwoDigits: boolean): string {
+  use24HoursFormat (): void {
+    this.isMeridianFormat = false
+  }
+
+  useMeridianFormat (): void {
+    this.isMeridianFormat = true
+  }
+
+  useMonthName (): void {
+    this.isMonthName = true
+  }
+
+  useMonthNumber (): void {
+    this.isMonthName = false
+  }
+
+  private getDateAsYYYYMMDD (
+    isYearAsTwoDigits: boolean = false
+  ): string {
+    const year = this.getYear(isYearAsTwoDigits)
+    const mounth = this.getMonth(this.isMonthName)
+    const day = this.date.getDate().toString()
+
+    return getDateFormatString(year, mounth, day, this.div)
+  }
+
+  private getDateAsMMDDYYYY (
+    isYearAsTwoDigits: boolean = false
+  ): string {
+    const year = this.getYear(isYearAsTwoDigits)
+    const mounth = this.getMonth(this.isMonthName)
+    const day = this.date.getDate().toString()
+
+    return getDateFormatString(mounth, day, year, this.div)
+  }
+
+  private getDateAsDDMMYYYY (
+    isYearAsTwoDigits: boolean = false
+  ): string {
+    const year = this.getYear(isYearAsTwoDigits)
+    const mounth = this.getMonth(this.isMonthName)
+    const day = this.date.getDate().toString()
+
+    return getDateFormatString(day, mounth, year, this.div)
+  }
+
+  private getYear (isYearAsTwoDigits: boolean): string {
     try {
-      return useYearWithTwoDigits
+      return isYearAsTwoDigits
         ? this.date.getFullYear().toString().substring(2, 4)
         : this.date.getFullYear().toString()
     } catch (error) {
@@ -157,7 +173,7 @@ class UniversalDateFormat {
   private getMonth (useMonthName: boolean): string {
     try {
       return useMonthName
-        ? this.months[this.date.getMonth() as keyof MonthsType]
+        ? this.months[this.date.getMonth()]
         : (this.date.getMonth() + 1).toString()
     } catch (error) {
       if (error instanceof Error) {
@@ -180,9 +196,10 @@ class UniversalDateFormat {
     }
   }
 
-  private convertHourToMeridianFormat (): number {
+  private convertHourToMeridianFormat (): string {
     try {
-      return this.date.getHours() >= 12 ? this.date.getHours() - 12 : this.date.getHours()
+      const hour = this.date.getHours() >= 12 ? this.date.getHours() - 12 : this.date.getHours()
+      return ('0' + hour).slice(-2)
     } catch (error) {
       if (error instanceof Error) {
         throw new DateValueNotIsDate({ cause: error })

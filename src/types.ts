@@ -1,44 +1,37 @@
-interface MonthsType {
-  0: string
-  1: string
-  2: string
-  3: string
-  4: string
-  5: string
-  6: string
-  7: string
-  8: string
-  9: string
-  10: string
-  11: string
-}
+type MonthsType = [
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string
+]
 
-interface DaysType {
-  0: string
-  1: string
-  2: string
-  3: string
-  4: string
-  5: string
-  6: string
-}
+type DaysType = [
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string
+]
 
 interface ErrorOptions {
   cause?: Error
 }
 
-enum typeOfDate {
-  YYYYMMDD,
-  DDMMYYYY,
-  MMDDYYYY
-}
-
-export {
-  typeOfDate
-}
+type TypeOfDate = 'YYYYMMDD' | 'DDMMYYYY' | 'MMDDYYYY'
 
 export type {
   DaysType,
   ErrorOptions,
-  MonthsType
+  MonthsType,
+  TypeOfDate
 }
