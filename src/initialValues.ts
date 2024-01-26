@@ -1,12 +1,12 @@
-import { type MonthsType, type TypeOfDate, type DaysType } from './types'
+import { type DaysType, type MonthsType, type TypeOfDate } from './types'
 
 const UniversalDateFormatInitialValues: {
   months: MonthsType
   days: DaysType
   defaultFormat: TypeOfDate
   div: string | [string, string]
-  isMeridianFormat: boolean
-  isMonthName: boolean
+  isMeridianFormat?: boolean
+  isMonthName?: boolean
 } = {
   months: [
     'January',
