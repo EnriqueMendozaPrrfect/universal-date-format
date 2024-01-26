@@ -1,6 +1,11 @@
 import getDateFormatString from './formatDateToString'
 import UniversalDateFormatInitialValues from './initialValues'
-import { type DaysType, type MonthsType, type TypeOfDate } from './types'
+import {
+  type ConfigurationType,
+  type DaysType,
+  type MonthsType,
+  type TypeOfDate
+} from './types'
 import {
   DateValueNotIsDate,
   InvalidDefaultFormat,
@@ -9,17 +14,16 @@ import {
 } from './Errors'
 
 class UniversalDateFormat {
-  readonly date: Date
+  protected date: Date
+  private div: string | [string, string]
+  private defaultFormat: TypeOfDate
+  private months: MonthsType
+  private days: DaysType
+  private isMeridianFormat
+  private isMonthName
 
-  private div: string | [string, string] = UniversalDateFormatInitialValues.div
-  private defaultFormat: TypeOfDate = UniversalDateFormatInitialValues.defaultFormat
-  private months: MonthsType = UniversalDateFormatInitialValues.months
-  private days: DaysType = UniversalDateFormatInitialValues.days
-  private isMeridianFormat = false
-  private isMonthName = false
-
-  constructor (date: Date)
-  constructor (date: string)
+  constructor (date: Date, configuration?: ConfigurationType)
+  constructor (date: string, configuration?: ConfigurationType)
   constructor (...arg: unknown[]) {
     if (typeof arg[0] === 'string') {
       this.date = new Date(arg[0])
@@ -32,6 +36,15 @@ class UniversalDateFormat {
         'value given to create an instance of UniversalDateFormat is not valid'
       )
     }
+
+    const configuration = typeof arg[1] !== 'undefined' ? arg[1] as ConfigurationType : undefined
+
+    this.div = configuration?.div ?? UniversalDateFormatInitialValues.div
+    this.defaultFormat = configuration?.defaultFormat ?? UniversalDateFormatInitialValues.defaultFormat
+    this.months = configuration?.months ?? UniversalDateFormatInitialValues.months
+    this.days = configuration?.days ?? UniversalDateFormatInitialValues.days
+    this.isMeridianFormat = configuration?.useMeridianFormat ?? false
+    this.isMonthName = configuration?.useMonthName ?? false
   }
 
   static getInstance (date: Date | string): UniversalDateFormat {
@@ -220,6 +233,7 @@ export {
 }
 
 export type {
+  ConfigurationType,
   DaysType,
   MonthsType
 }

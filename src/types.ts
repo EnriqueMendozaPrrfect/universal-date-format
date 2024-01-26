@@ -29,7 +29,17 @@ interface ErrorOptions {
 
 type TypeOfDate = 'YYYYMMDD' | 'DDMMYYYY' | 'MMDDYYYY'
 
+interface ConfigurationType {
+  months?: MonthsType
+  days?: DaysType
+  defaultFormat?: TypeOfDate
+  div?: string | [string, string]
+  useMeridianFormat?: boolean
+  useMonthName?: boolean
+}
+
 export type {
+  ConfigurationType,
   DaysType,
   ErrorOptions,
   MonthsType,

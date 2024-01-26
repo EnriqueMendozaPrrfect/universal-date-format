@@ -30,6 +30,32 @@ new UniversalDateFormat(new Date(2020, 0, 15))
 new UniversalDateFormat(new Date('2020-01-15T00:00:00.000Z'))
 ```
 
+**Create instance using a own configuration**
+All elements into the configuration are optional, if you want change the config,
+you may change it using the public functions of the class.
+```
+  new UniversalDateFormat(
+    new Date(2020, 0, 15),
+    {
+      defaultFormat: 'MMDDYYYY',
+      div: '/',
+      useMeridianFormat: true,
+      useMonthName: true,
+      days: [
+        'Sun', 'Mon', 'Tue',
+        'Wed', 'Thu', 'Fri',
+        'Sat'
+      ],
+      months: [
+        'Jan', 'Feb', 'Mar',
+        'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep',
+        'Oct', 'Nov', 'Dec'
+      ]
+    }
+  )
+```
+
 **Set MMDDYYYY as default**
 ```
   dateFormater.setMMDDYYYYAsDefault()
