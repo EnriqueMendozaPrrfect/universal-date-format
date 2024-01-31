@@ -141,3 +141,6 @@ To receive  the the seconds you can send a boolean when you call getHourFormat()
   dateFormater.getHourFormat()
   // 05:08 PM
 ```
+
+### Examples
+**React:** [card-users-udf-react-example](https://github.com/EnriqueMendozaPrrfect/card-users-udf-react-example)
