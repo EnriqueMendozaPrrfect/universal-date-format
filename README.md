@@ -142,5 +142,19 @@ To receive  the the seconds you can send a boolean when you call getHourFormat()
   // 05:08 PM
 ```
 
+**Execute a own function**
+```
+  const ownFunction = (dateFormater: DateFormater): string => {
+    dateFormater.useMeridianFormat()
+    const hours = dateFormater.getHourFormat()
+    const date = dateFormater.getDateFormat()
+
+    return `${hours} ${date}`
+  }
+
+  dateFormater.execute(ownFunction)
+  // 05:08 PM 2020/1/15
+```
+
 ### Examples
 **React:** [card-users-udf-react-example](https://github.com/EnriqueMendozaPrrfect/card-users-udf-react-example)
