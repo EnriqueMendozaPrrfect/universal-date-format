@@ -1,6 +1,6 @@
 {
   "name": "universal-date-format",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Easy way to display dates using a common human languaje",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -11,11 +11,11 @@
   },
   "author": "Enrique Mendoza <linkedin.com/in/enrique-mendoza-martinez>",
   "keywords": [
-      "date",
-      "time",
-      "parse",
-      "format",
-      "moment"
+    "date",
+    "time",
+    "parse",
+    "format",
+    "moment"
   ],
   "license": "MIT",
   "repository": {
